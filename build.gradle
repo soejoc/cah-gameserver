@@ -1,0 +1,20 @@
+plugins {
+    id 'application'
+}
+
+group 'collo'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+mainClassName = "App"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.15.Final'
+    compile files('../cah-framework/build/cah-framework-1.0-SNAPSHOT.jar')
+}
