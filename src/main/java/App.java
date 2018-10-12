@@ -34,6 +34,7 @@ public final class App {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f = b.bind(Config.SERVER_PORT).sync();
+
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
