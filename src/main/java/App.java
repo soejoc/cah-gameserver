@@ -11,20 +11,20 @@ import codec.decoder.meta.MetaDecoder;
 import codec.encoder.meta.MetaEncoder;
 
 public final class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         new App().run();
     }
 
     public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final EventLoopGroup bossGroup = new NioEventLoopGroup();
+        final EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            ServerBootstrap b = new ServerBootstrap();
+            final ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(SocketChannel ch)
+                        public void initChannel(final SocketChannel ch)
                                 throws Exception {
                             ch.pipeline().addLast(new MetaDecoder(),
                                     new MetaEncoder(),
@@ -33,7 +33,7 @@ public final class App {
                     }).option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture f = b.bind(Config.SERVER_PORT).sync();
+            final ChannelFuture f = b.bind(Config.SERVER_PORT).sync();
 
             f.channel().closeFuture().sync();
         } finally {

@@ -2,26 +2,27 @@ package handler;
 
 import channel_handler.ProcessingHandler;
 import io.netty.channel.ChannelHandlerContext;
-import protocol.Message;
+import protocol.MessageCode;
+import protocol.object.error.ErrorObject;
 import protocol.object.request.StartGameRequest;
 import session.PlayerSession;
 import session.Session;
-import throwable.exception.InvalidInputStreamException;
 import util.ProtocolInputStream;
 
 public class MessageHandler extends ProcessingHandler implements RequestMessages {
+
     @Override
-    protected Session getOrCreateSession(ChannelHandlerContext ctx) {
-        return new PlayerSession(ctx);
+    protected Session getSession(final ChannelHandlerContext ctx) {
+        return PlayerSession.getOrCreate(ctx);
     }
 
     @Override
-    protected void handleMessage(int messageId, ProtocolInputStream rawMessage, Session session) throws InvalidInputStreamException {
-        PlayerSession playerSession = (PlayerSession)session;
+    protected void handleMessage(final int messageId, final ProtocolInputStream rawMessage, final Session session) {
+        final PlayerSession playerSession = (PlayerSession)session;
 
         switch (messageId) {
-            case Message.START_GAME_RQ: {
-                StartGameRequest startGameRequest = new StartGameRequest();
+            case MessageCode.START_GAME_RQ: {
+                final StartGameRequest startGameRequest = new StartGameRequest();
                 startGameRequest.fromStream(rawMessage);
 
                 OnStartGame(startGameRequest, playerSession);
@@ -30,7 +31,12 @@ public class MessageHandler extends ProcessingHandler implements RequestMessages
     }
 
     @Override
-    public void OnStartGame(StartGameRequest startGameRequest, PlayerSession session) {
+    protected void onErrorReceived(final ErrorObject errorObject) {
+
+    }
+
+    @Override
+    public void OnStartGame(final StartGameRequest startGameRequest, final PlayerSession session) {
         session.startGame(startGameRequest.nickName);
     }
 }
