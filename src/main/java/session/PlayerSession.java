@@ -35,6 +35,5 @@ public class PlayerSession extends Session {
 
     public void startGame(final String nickName) {
         this.nickName = nickName;
-        throw new InvalidMessageException();
     }
 }
