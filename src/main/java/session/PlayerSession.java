@@ -1,6 +1,7 @@
 package session;
 
 import io.netty.channel.ChannelHandlerContext;
+import protocol.error.exception.InvalidMessageException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,5 +35,6 @@ public class PlayerSession extends Session {
 
     public void startGame(final String nickName) {
         this.nickName = nickName;
+        throw new InvalidMessageException();
     }
 }

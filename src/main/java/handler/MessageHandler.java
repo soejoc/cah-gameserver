@@ -31,7 +31,7 @@ public class MessageHandler extends ProcessingHandler implements RequestMessages
     }
 
     @Override
-    protected void onErrorReceived(final ErrorObject errorObject) {
+    protected void onErrorReceived(final ErrorObject errorObject, final Session session) {
 
     }
 
