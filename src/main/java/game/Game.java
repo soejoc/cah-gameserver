@@ -12,7 +12,7 @@ public class Game {
     public static final int PLAYER_SIZE_FOR_GAME = 4;
     private static List<Game> games = new LinkedList<>();
 
-    public static void register(final Player player) {
+    public static Game register(final Player player) {
         Game game = (!games.isEmpty()) ? games.get(games.size() - 1) : null;
 
         if(game == null || game.getPlayerSize() == PLAYER_SIZE_FOR_GAME) {
@@ -21,6 +21,8 @@ public class Game {
         }
 
         game.addPlayer(player);
+
+        return game;
     }
 
     private List<Player> players = new ArrayList<>();
@@ -29,7 +31,7 @@ public class Game {
         players.add(newPlayer);
 
         if(getPlayerSize() == PLAYER_SIZE_FOR_GAME) {
-            for(Player player : players) {
+            for(final Player player : players) {
                 final StartGameResponse startGameResponse = new StartGameResponse();
                 startGameResponse.nickName = player.getNickName();
 

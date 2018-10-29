@@ -21,6 +21,7 @@ public class Player extends Session {
     }
 
     private String nickName;
+    private Game currentGame;
 
     private Player(final ChannelHandlerContext channelHandlerContext) {
         super(channelHandlerContext);
@@ -34,9 +35,13 @@ public class Player extends Session {
     }
 
     public void startGame(final String nickName) {
+        if(currentGame == null) {
+            return;
+        }
+
         this.nickName = nickName;
 
-        Game.register(this);
+        currentGame = Game.register(this);
     }
 
     public String getNickName() {
