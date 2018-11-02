@@ -24,6 +24,7 @@ public class Player extends Session {
     private UUID playerId = UUID.randomUUID();
     private String nickName;
     private Game currentGame;
+    private UUID sessionId;
 
     private Player(final ChannelHandlerContext channelHandlerContext) {
         super(channelHandlerContext);
@@ -37,7 +38,7 @@ public class Player extends Session {
     }
 
     public void startGame(final String nickName) {
-        if(currentGame == null) {
+        if(currentGame != null) {
             return;
         }
 
@@ -52,5 +53,13 @@ public class Player extends Session {
 
     public UUID getPlayerId() {
         return playerId;
+    }
+
+    public void setSessionId(final UUID sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public UUID getSessionId() {
+        return sessionId;
     }
 }

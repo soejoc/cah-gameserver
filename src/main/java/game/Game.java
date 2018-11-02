@@ -8,10 +8,11 @@ import session.Player;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Game {
-    public static final int PLAYER_SIZE_FOR_GAME = 4;
+    public static final int PLAYER_SIZE_FOR_GAME = 1;
     private static List<Game> games = new LinkedList<>();
 
     public static Game register(final Player player) {
@@ -44,6 +45,10 @@ public class Game {
     private void startGame() {
         for(final Player player : players) {
             final StartGameResponse startGameResponse = new StartGameResponse();
+
+            final UUID sessionId = UUID.randomUUID();
+            player.setSessionId(sessionId);
+            startGameResponse.sessionId = sessionId;
 
             final PlayerModel me = new PlayerModel();
             me.playerId = player.getPlayerId();
