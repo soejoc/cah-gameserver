@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Player extends Session {
     private static Map<ChannelHandlerContext, Player> sessionMap = new HashMap<>();
@@ -20,6 +21,7 @@ public class Player extends Session {
         return player;
     }
 
+    private UUID playerId = UUID.randomUUID();
     private String nickName;
     private Game currentGame;
 
@@ -46,5 +48,9 @@ public class Player extends Session {
 
     public String getNickName() {
         return nickName;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
     }
 }

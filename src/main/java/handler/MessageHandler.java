@@ -2,9 +2,9 @@ package handler;
 
 import channel_handler.ProcessingHandler;
 import io.netty.channel.ChannelHandlerContext;
-import protocol.MessageCode;
-import protocol.object.error.ErrorObject;
-import protocol.object.request.StartGameRequest;
+import protocol.object.message.MessageCode;
+import protocol.object.message.error.ErrorObject;
+import protocol.object.message.request.StartGameRequest;
 import session.Player;
 import session.Session;
 import util.ProtocolInputStream;
