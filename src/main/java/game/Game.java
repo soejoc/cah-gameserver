@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Game {
-    public static final int PLAYER_SIZE_FOR_GAME = 1;
+    public static final int PLAYER_SIZE_FOR_GAME = 4;
     private static List<Game> games = new LinkedList<>();
 
     public static Game register(final Player player) {
