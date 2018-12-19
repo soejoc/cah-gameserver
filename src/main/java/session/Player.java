@@ -3,12 +3,13 @@ package session;
 import game.Game;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Player extends Session {
-    private static Map<ChannelHandlerContext, Player> sessionMap = new HashMap<>();
+    private static final Map<ChannelHandlerContext, Player> sessionMap = new ConcurrentHashMap<>();
 
     public static Player getOrCreate(final ChannelHandlerContext channelHandlerContext) {
         Player player = sessionMap.get(channelHandlerContext);
@@ -19,6 +20,25 @@ public class Player extends Session {
         }
 
         return player;
+    }
+
+    public static Player getPlayerBySessionId(final UUID sessionId) {
+        final Collection<Player> playerCollection = sessionMap.values();
+
+        for(final Player player : playerCollection) {
+            if(sessionId.equals(player.getSessionId())) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public static void reassignPlayer(final Player activePlayer, final Player newPlayer) {
+        sessionMap.remove(activePlayer.channelHandlerContext);
+
+        activePlayer.channelHandlerContext = newPlayer.channelHandlerContext;
+        sessionMap.put(activePlayer.channelHandlerContext, activePlayer);
     }
 
     private UUID playerId = UUID.randomUUID();
@@ -37,14 +57,8 @@ public class Player extends Session {
         super.close();
     }
 
-    public void startGame(final String nickName) {
-        if(currentGame != null) {
-            return;
-        }
-
+    public void setNickName(final String nickName) {
         this.nickName = nickName;
-
-        currentGame = Game.register(this);
     }
 
     public String getNickName() {
@@ -61,5 +75,13 @@ public class Player extends Session {
 
     public UUID getSessionId() {
         return sessionId;
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public void setCurrentGame(final Game currentGame) {
+        this.currentGame = currentGame;
     }
 }

@@ -5,71 +5,69 @@ import protocol.object.message.response.WaitForGameResponse;
 import protocol.object.model.PlayerModel;
 import session.Player;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public class Game {
-    public static final int PLAYER_SIZE_FOR_GAME = 4;
-    private static List<Game> games = new LinkedList<>();
+    private static final int PLAYER_SIZE_FOR_GAME = 4;
+    private static final List<Game> games = new LinkedList<>();
+    private static final Queue<Player> playerQueue = new LinkedList<>();
 
-    public static Game register(final Player player) {
-        Game game = (!games.isEmpty()) ? games.get(games.size() - 1) : null;
+    public static synchronized void register(final Player player) {
+        playerQueue.add(player);
 
-        if(game == null || game.getPlayerSize() == PLAYER_SIZE_FOR_GAME) {
-            game = new Game();
+        if(playerQueue.size() == PLAYER_SIZE_FOR_GAME) {
+            final Game game = new Game();
+
+            while (!playerQueue.isEmpty()) {
+                final Player queuedPlayer = playerQueue.remove();
+                game.addPlayer(queuedPlayer);
+                queuedPlayer.setCurrentGame(game);
+            }
+
+            game.startGameForAll();
             games.add(game);
+        } else {
+            final WaitForGameResponse waitForGameResponse = new WaitForGameResponse();
+            player.say(waitForGameResponse);
         }
-
-        game.addPlayer(player);
-
-        return game;
     }
 
     private List<Player> players = new ArrayList<>();
 
-    private void addPlayer(final Player newPlayer) {
-        players.add(newPlayer);
-
-        if(getPlayerSize() == PLAYER_SIZE_FOR_GAME) {
-            startGame();
-        } else {
-            final WaitForGameResponse waitForGameResponse = new WaitForGameResponse();
-
-            newPlayer.say(waitForGameResponse);
-        }
+    private void addPlayer(final Player player) {
+        players.add(player);
     }
 
-    private void startGame() {
+    private void startGameForAll() {
         for(final Player player : players) {
-            final StartGameResponse startGameResponse = new StartGameResponse();
-
-            final UUID sessionId = UUID.randomUUID();
-            player.setSessionId(sessionId);
-            startGameResponse.sessionId = sessionId;
-
-            final PlayerModel me = new PlayerModel();
-            me.playerId = player.getPlayerId();
-            me.nickName = player.getNickName();
-
-            startGameResponse.me = me;
-            startGameResponse.antagonists = players.stream()
-                    .filter(p -> p != player)
-                    .map(p -> {
-                        final PlayerModel playerModel = new PlayerModel();
-                        playerModel.nickName = p.getNickName();
-                        playerModel.playerId = p.getPlayerId();
-
-                        return playerModel;
-                    }).collect(Collectors.toList());
-
-            player.say(startGameResponse);
+            startGame(player);
         }
     }
 
-    public int getPlayerSize() {
-        return players.size();
+    public void startGame(final Player player) {
+        final StartGameResponse startGameResponse = new StartGameResponse();
+
+        final UUID sessionId = UUID.randomUUID();
+        player.setSessionId(sessionId);
+        startGameResponse.sessionId = sessionId;
+
+        final PlayerModel me = new PlayerModel();
+        me.playerId = player.getPlayerId();
+        me.nickName = player.getNickName();
+
+        startGameResponse.me = me;
+        startGameResponse.antagonists = players.stream()
+                .filter(p -> p != player)
+                .map(p -> {
+                    final PlayerModel playerModel = new PlayerModel();
+                    playerModel.nickName = p.getNickName();
+                    playerModel.playerId = p.getPlayerId();
+
+                    return playerModel;
+                }).collect(Collectors.toList());
+
+        player.say(startGameResponse);
     }
 }
