@@ -1,6 +1,6 @@
 package handler;
 
-import channel_handler.ProcessingHandler;
+import channel_handler.SslServerProcessingHandler;
 import game.Game;
 import io.netty.channel.ChannelHandlerContext;
 import protocol.object.message.MessageCode;
@@ -12,7 +12,7 @@ import session.Player;
 import session.Session;
 import util.ProtocolInputStream;
 
-public class MessageHandler extends ProcessingHandler {
+public class MessageHandler extends SslServerProcessingHandler {
 
     @Override
     protected Session getSession(final ChannelHandlerContext ctx) {
