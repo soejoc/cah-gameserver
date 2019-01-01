@@ -1,5 +1,7 @@
-import handler.MessageHandler;
-import initializer.SslServerInitializer;
+package io.jochimsen.cahgameserver;
+
+import io.jochimsen.cahgameserver.handler.MessageHandler;
+import io.jochimsen.cahframework.initializer.SslServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

@@ -1,16 +1,16 @@
-package handler;
+package io.jochimsen.cahgameserver.handler;
 
-import channel_handler.SslServerProcessingHandler;
-import game.Game;
+import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
+import io.jochimsen.cahframework.session.Session;
+import io.jochimsen.cahgameserver.game.Game;
 import io.netty.channel.ChannelHandlerContext;
-import protocol.object.message.MessageCode;
-import protocol.object.message.error.ErrorObject;
-import protocol.object.message.request.RestartGameRequest;
-import protocol.object.message.request.StartGameRequest;
-import protocol.object.message.response.FinishedGameResponse;
-import session.Player;
-import session.Session;
-import util.ProtocolInputStream;
+import io.jochimsen.cahframework.protocol.object.message.MessageCode;
+import io.jochimsen.cahframework.protocol.object.message.error.ErrorObject;
+import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
+import io.jochimsen.cahgameserver.session.Player;
+import io.jochimsen.cahframework.util.ProtocolInputStream;
 
 public class MessageHandler extends SslServerProcessingHandler {
 

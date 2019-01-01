@@ -1,12 +1,11 @@
-package game;
+package io.jochimsen.cahgameserver.game;
 
-import protocol.object.message.response.StartGameResponse;
-import protocol.object.message.response.WaitForGameResponse;
-import protocol.object.model.PlayerModel;
-import session.Player;
+import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
+import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
+import io.jochimsen.cahframework.protocol.object.model.PlayerModel;
+import io.jochimsen.cahgameserver.session.Player;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public class Game {

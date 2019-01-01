@@ -1,6 +1,7 @@
-package session;
+package io.jochimsen.cahgameserver.session;
 
-import game.Game;
+import io.jochimsen.cahframework.session.Session;
+import io.jochimsen.cahgameserver.game.Game;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Collection;
