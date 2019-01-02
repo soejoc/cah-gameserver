@@ -4,18 +4,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "gameserver")
 public class ServerProperties {
-    private int tcpPort;
+    private int port;
     private int bossCount;
     private int workerCount;
     private boolean keepAlive;
     private int backlog;
+    private String webserviceUrl;
 
-    public int getTcpPort() {
-        return tcpPort;
+    public int getPort() {
+        return port;
     }
 
-    public void setTcpPort(final int tcpPort) {
-        this.tcpPort = tcpPort;
+    public void setPort(final int port) {
+        this.port = port;
     }
 
     public int getBossCount() {
@@ -48,5 +49,13 @@ public class ServerProperties {
 
     public void setBacklog(final int backlog) {
         this.backlog = backlog;
+    }
+
+    public String getWebserviceUrl() {
+        return webserviceUrl;
+    }
+
+    public void setWebserviceUrl(final String webserviceUrl) {
+        this.webserviceUrl = webserviceUrl;
     }
 }

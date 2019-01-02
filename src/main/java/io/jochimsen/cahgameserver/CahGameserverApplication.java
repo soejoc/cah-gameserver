@@ -62,7 +62,7 @@ public class CahGameserverApplication {
 
 	@Bean
 	public InetSocketAddress tcpSocketAddress() {
-		return new InetSocketAddress(serverProperties.getTcpPort());
+		return new InetSocketAddress(serverProperties.getPort());
 	}
 
 	@Bean
