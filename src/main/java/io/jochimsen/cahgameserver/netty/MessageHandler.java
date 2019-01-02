@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.handler;
+package io.jochimsen.cahgameserver.netty;
 
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
 import io.jochimsen.cahframework.session.Session;
@@ -11,7 +11,9 @@ import io.jochimsen.cahframework.protocol.object.message.request.StartGameReques
 import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahgameserver.session.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageHandler extends SslServerProcessingHandler {
 
     @Override
