@@ -1,0 +1,33 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.jochimsen.cahgameserver" level="DEBUG" />
+    <logger name="org.springframework.context" level="DEBUG" />
+    <logger name="io.netty" level="DEBUG" />
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <springProfile name="container">
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>gameserver.log</file>
+            <append>true</append>
+            <encoder>
+                <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <logger name="io.jochimsen.cahgameserver" level="${LOG_LEVEL}" />
+        <logger name="org.springframework.context" level="${LOG_LEVEL}" />
+        <logger name="io.netty" level="${LOG_LEVEL}" />
+
+        <root level="INFO">
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+</configuration>
