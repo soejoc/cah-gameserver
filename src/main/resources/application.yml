@@ -11,9 +11,9 @@ spring:
   profiles: container
 
 gameserver:
-  port: ${PORT}
-  boss-count: ${BOSS_COUNT}
-  worker-count: ${WORKER_COUNT}
-  keep-alive: ${KEEP_ALIVE}
-  backlog: ${BACKLOG}
+  port: ${PORT:-666}
+  boss-count: ${BOSS_COUNT:-1}
+  worker-count: ${WORKER_COUNT:-10}
+  keep-alive: ${KEEP_ALIVE:-true}
+  backlog: ${BACKLOG:-100}
   webservice-url: ${WEBSERVICE_URL}

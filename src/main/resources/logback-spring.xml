@@ -22,9 +22,9 @@
             </encoder>
         </appender>
 
-        <logger name="io.jochimsen.cahgameserver" level="${LOG_LEVEL}" />
-        <logger name="org.springframework.context" level="${LOG_LEVEL}" />
-        <logger name="io.netty" level="${LOG_LEVEL}" />
+        <logger name="io.jochimsen.cahgameserver" level="${LOG_LEVEL:-INFO}" />
+        <logger name="org.springframework.context" level="${LOG_LEVEL:-INFO}" />
+        <logger name="io.netty" level="${LOG_LEVEL:-INFO}" />
 
         <root level="INFO">
             <appender-ref ref="FILE" />
