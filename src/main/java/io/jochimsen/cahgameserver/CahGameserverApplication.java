@@ -12,6 +12,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +27,9 @@ import java.net.InetSocketAddress;
 @EnableConfigurationProperties(ServerProperties.class)
 public class CahGameserverApplication {
 
-	public static void main(String[] args) throws Exception {
+	private static final InternalLogger logger = InternalLoggerFactory.getInstance(CahGameserverApplication.class);
+
+	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(CahGameserverApplication.class, args);
 
 		TCPServer tcpServer = context.getBean(TCPServer.class);
@@ -63,14 +67,24 @@ public class CahGameserverApplication {
 	}
 
 	@Bean
-	public ChannelHandler channelHandler(final MessageHandler messageHandler) throws Exception {
-		final SelfSignedCertificate ssc = new SelfSignedCertificate();
-		final SslContext sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-				.build();
+	public SslContext sslContext() {
+		try {
+			//ToDo: Replace with actual private key and certificate
+			final SelfSignedCertificate ssc = new SelfSignedCertificate();
+			final SslContext sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
+					.build();
 
-		//ToDO: Appropriate exception handling
+			return sslCtx;
+		} catch (Exception e) {
+			logger.error("Exception caught while createing SSLContext: {}", e);
+		}
 
-		return new SslServerInitializer(sslCtx, messageHandler);
+		return null;
+	}
+
+	@Bean
+	public ChannelHandler channelHandler(final MessageHandler messageHandler, final SslContext sslContext) {
+		return new SslServerInitializer(sslContext, messageHandler);
 	}
 }
 

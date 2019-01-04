@@ -3,6 +3,7 @@ package io.jochimsen.cahgameserver.netty;
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorObject;
@@ -14,6 +15,7 @@ import io.jochimsen.cahframework.util.ProtocolInputStream;
 import org.springframework.stereotype.Component;
 
 @Component
+@ChannelHandler.Sharable
 public class MessageHandler extends SslServerProcessingHandler {
 
     @Override

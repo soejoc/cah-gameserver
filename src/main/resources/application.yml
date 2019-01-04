@@ -8,7 +8,7 @@ spring:
   profiles: dev
 
 gameserver:
-  port: 8345
+  port: 666
   boss-count: 1
   worker-count: 10
   keep-alive: true
