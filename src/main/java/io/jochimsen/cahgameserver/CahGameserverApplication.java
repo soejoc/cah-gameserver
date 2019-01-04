@@ -76,7 +76,7 @@ public class CahGameserverApplication {
 
 			return sslCtx;
 		} catch (Exception e) {
-			logger.error("Exception caught while createing SSLContext: {}", e);
+			logger.error("Exception caught while creating SSLContext: {}", e);
 		}
 
 		return null;
