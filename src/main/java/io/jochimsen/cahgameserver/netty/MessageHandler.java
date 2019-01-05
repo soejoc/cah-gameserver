@@ -3,6 +3,7 @@ package io.jochimsen.cahgameserver.netty;
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
+import io.jochimsen.cahgameserver.repository.WhiteCardRepository;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
@@ -10,13 +11,17 @@ import io.jochimsen.cahframework.protocol.object.message.error.ErrorObject;
 import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
 import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
 import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
-import io.jochimsen.cahgameserver.session.Player;
+import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
 public class MessageHandler extends SslServerProcessingHandler {
+
+    @Autowired
+    WhiteCardRepository whiteCardRepository;
 
     @Override
     protected Session getSession(final ChannelHandlerContext ctx) {

@@ -86,5 +86,10 @@ public class CahGameserverApplication {
 	public ChannelHandler channelHandler(final MessageHandler messageHandler, final SslContext sslContext) {
 		return new SslServerInitializer(sslContext, messageHandler);
 	}
+
+	@Bean(name = "baseUrl")
+	public String baserUrl() {
+		return serverProperties.getWebserviceUrl();
+	}
 }
 

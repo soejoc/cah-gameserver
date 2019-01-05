@@ -3,7 +3,6 @@ package io.jochimsen.cahgameserver.game;
 import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
 import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
 import io.jochimsen.cahframework.protocol.object.model.PlayerModel;
-import io.jochimsen.cahgameserver.session.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
