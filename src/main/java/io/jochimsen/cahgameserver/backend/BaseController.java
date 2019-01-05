@@ -16,7 +16,7 @@ public abstract class BaseController {
 
     @Autowired
     @Qualifier("baseUrl")
-    public String baseUrl;
+    private String baseUrl;
 
     private final String namespace;
 

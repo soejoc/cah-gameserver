@@ -3,6 +3,9 @@ package io.jochimsen.cahgameserver.netty;
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
+import io.jochimsen.cahgameserver.repository.BlackCardRepository;
+import io.jochimsen.cahgameserver.repository.GameRepository;
+import io.jochimsen.cahgameserver.repository.PlayerRepository;
 import io.jochimsen.cahgameserver.repository.WhiteCardRepository;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,11 +24,20 @@ import org.springframework.stereotype.Component;
 public class MessageHandler extends SslServerProcessingHandler {
 
     @Autowired
-    WhiteCardRepository whiteCardRepository;
+    private WhiteCardRepository whiteCardRepository;
+
+    @Autowired
+    private BlackCardRepository blackCardRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @Override
     protected Session getSession(final ChannelHandlerContext ctx) {
-        return Player.getOrCreate(ctx);
+        return playerRepository.getOrCreate(ctx);
     }
 
     @Override
@@ -56,18 +68,26 @@ public class MessageHandler extends SslServerProcessingHandler {
 
     }
 
+    @Override
+    protected void closeSession(final Session session) {
+        final Player player = (Player)session;
+
+        playerRepository.removePlayer(player);
+        super.closeSession(session);
+    }
+
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
         if(player.getCurrentGame() == null) {
             player.setNickName(startGameRequest.nickName);
-            Game.register(player);
+            gameRepository.register(player);
         }
     }
 
     private void onRestartGame(final Player player, final RestartGameRequest restartGameRequest) {
-        final Player activePlayer = Player.getPlayerBySessionId(restartGameRequest.sessionKey);
+        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.sessionKey);
 
         if(activePlayer != null) {
-            Player.reassignPlayer(activePlayer, player);
+            playerRepository.reassignPlayer(activePlayer, player);
 
             final Game currentGame = activePlayer.getCurrentGame();
             currentGame.startGame(activePlayer);
