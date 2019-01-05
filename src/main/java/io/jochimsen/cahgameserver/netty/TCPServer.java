@@ -2,8 +2,8 @@ package io.jochimsen.cahgameserver.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 
 @Component
 public class TCPServer {
-    private static final InternalLogger logger = InternalLoggerFactory.getInstance(TCPServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TCPServer.class);
 
     private final ServerBootstrap serverBootstrap;
 

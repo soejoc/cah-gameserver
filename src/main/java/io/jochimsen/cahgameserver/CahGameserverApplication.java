@@ -12,8 +12,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,7 +27,7 @@ import java.net.InetSocketAddress;
 @EnableConfigurationProperties(ServerProperties.class)
 public class CahGameserverApplication {
 
-	private static final InternalLogger logger = InternalLoggerFactory.getInstance(CahGameserverApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(CahGameserverApplication.class);
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(CahGameserverApplication.class, args);
