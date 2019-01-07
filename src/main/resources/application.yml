@@ -13,7 +13,7 @@ gameserver:
   worker-count: 10
   keep-alive: true
   backlog: 100
-  webservice-url: https://api.cah.jochimsen.io/
+  webservice-url: http://localhost:8080/
 
 ---
 

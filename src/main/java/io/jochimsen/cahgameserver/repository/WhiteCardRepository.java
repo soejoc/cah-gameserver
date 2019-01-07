@@ -25,4 +25,15 @@ public class WhiteCardRepository {
                 .map(whiteCardResponse -> new WhiteCard(whiteCardResponse.whiteCardId, whiteCardResponse.text))
                 .collect(Collectors.toMap(WhiteCard::getWhiteCardId, Function.identity()));
     }
+
+    public List<WhiteCard> get(final List<WhiteCard> usedCards, int amount) {
+        return whiteCardMap.values().stream()
+                .filter(whiteCard -> !usedCards.contains(whiteCard))
+                .limit(amount)
+                .collect(Collectors.toList());
+    }
+
+    public WhiteCard get(long whiteCardId) {
+        return whiteCardMap.get(whiteCardId);
+    }
 }

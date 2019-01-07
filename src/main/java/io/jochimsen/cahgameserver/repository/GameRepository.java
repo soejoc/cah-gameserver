@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Repository
 public class GameRepository {
-    private static final int PLAYER_SIZE_FOR_GAME = 4;
+    private static final int PLAYER_SIZE_FOR_GAME = 2;
 
     private final List<Game> games = new LinkedList<>();
     private final Queue<Player> playerQueue = new ConcurrentLinkedQueue<>();
 
-    public void register(final Player player) {
+    public Game register(final Player player) {
         playerQueue.add(player);
 
         if(playerQueue.size() == PLAYER_SIZE_FOR_GAME) {
@@ -31,9 +31,17 @@ public class GameRepository {
 
             game.startGameForAll();
             games.add(game);
+
+            return game;
         } else {
             final WaitForGameResponse waitForGameResponse = new WaitForGameResponse();
             player.say(waitForGameResponse);
+
+            return null;
         }
+    }
+
+    public void unregister(final Player player) {
+        playerQueue.remove(player);
     }
 }

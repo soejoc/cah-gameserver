@@ -25,4 +25,11 @@ public class BlackCardRepository {
                 .map(blackCardResponse -> new BlackCard(blackCardResponse.blackCardId, blackCardResponse.text, blackCardResponse.blankCount))
                 .collect(Collectors.toMap(BlackCard::getBlackCardId, Function.identity()));
     }
+
+    public List<BlackCard> getCards(final List<BlackCard> usedCards, int amount) {
+        return blackCardMap.values().stream()
+                .filter(blackCard -> !usedCards.contains(blackCard))
+                .limit(amount)
+                .collect(Collectors.toList());
+    }
 }

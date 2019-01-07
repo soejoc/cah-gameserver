@@ -1,8 +1,15 @@
 package io.jochimsen.cahgameserver.netty;
 
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
+import io.jochimsen.cahframework.protocol.object.message.request.SelectCardsRequest;
+import io.jochimsen.cahframework.protocol.object.message.response.AddCardsResponse;
+import io.jochimsen.cahframework.protocol.object.message.response.GameMasterResponse;
+import io.jochimsen.cahframework.protocol.object.model.BlackCardModel;
+import io.jochimsen.cahframework.protocol.object.model.WhiteCardModel;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
+import io.jochimsen.cahgameserver.game.card.BlackCard;
+import io.jochimsen.cahgameserver.game.card.WhiteCard;
 import io.jochimsen.cahgameserver.repository.BlackCardRepository;
 import io.jochimsen.cahgameserver.repository.GameRepository;
 import io.jochimsen.cahgameserver.repository.PlayerRepository;
@@ -18,6 +25,9 @@ import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @ChannelHandler.Sharable
@@ -60,6 +70,14 @@ public class MessageHandler extends SslServerProcessingHandler {
                 onRestartGame(player, restartGameRequest);
                 break;
             }
+
+            case MessageCode.SELECT_CARDS_RQ: {
+                final SelectCardsRequest selectCardsRequest = new SelectCardsRequest();
+                selectCardsRequest.fromStream(rawMessage);
+
+                onSelectCards(player, selectCardsRequest);
+                break;
+            }
         }
     }
 
@@ -73,13 +91,48 @@ public class MessageHandler extends SslServerProcessingHandler {
         final Player player = (Player)session;
 
         playerRepository.removePlayer(player);
+        gameRepository.unregister(player);
+
         super.closeSession(session);
     }
 
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
         if(player.getCurrentGame() == null) {
             player.setNickName(startGameRequest.nickName);
-            gameRepository.register(player);
+            final Game game = gameRepository.register(player);
+
+            if(game != null) {
+                final List<Player> players = game.getPlayers();
+                final BlackCard blackCard = blackCardRepository.getCards(game.getUsedBlackCards(), 1).get(0);
+                game.addUsedBlackCard(blackCard);
+
+                for(final Player playerGame : players) {
+                    final List<WhiteCard> whiteCards = whiteCardRepository.get(game.getUsedWhiteCards(), 3);
+                    game.addUsedWhiteCards(whiteCards);
+                    playerGame.addWhiteCard(whiteCards);
+
+                    final AddCardsResponse addCardsResponse = new AddCardsResponse();
+                    addCardsResponse.whiteCardModels = whiteCards.stream()
+                            .map(whiteCard -> {
+                                final WhiteCardModel whiteCardModel = new WhiteCardModel();
+                                whiteCardModel.whiteCardId = whiteCard.getWhiteCardId();
+
+                                return whiteCardModel;
+                            }).collect(Collectors.toList());
+
+                    final BlackCardModel blackCardModel = new BlackCardModel();
+                    blackCardModel.blackCardId = blackCard.getBlackCardId();
+
+                    addCardsResponse.blackCardModel = blackCardModel;
+
+                    playerGame.say(addCardsResponse);
+                }
+
+                final Player gameMaster = game.getGameMaster();
+                final GameMasterResponse gameMasterResponse = new GameMasterResponse();
+
+                gameMaster.say(gameMasterResponse);
+            }
         }
     }
 
@@ -95,5 +148,12 @@ public class MessageHandler extends SslServerProcessingHandler {
             final FinishedGameResponse finishedGameResponse = new FinishedGameResponse();
             player.say(finishedGameResponse);
         }
+    }
+
+    private void onSelectCards(final Player player, final SelectCardsRequest selectCardsRequest) {
+        final List<WhiteCard> selectedCards = selectCardsRequest.whiteCardModels.stream()
+                .map(whiteCardModel -> whiteCardRepository.get(whiteCardModel.whiteCardId)).collect(Collectors.toList());
+
+        player.selectCards(selectedCards);
     }
 }
