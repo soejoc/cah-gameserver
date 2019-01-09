@@ -74,11 +74,20 @@ public class Player extends Session {
             }
         }
 
+        whiteCards.removeAll(selectedCards);
         this.selectedCards = selectedCards;
         currentGame.playerSelectedWhiteCards(this);
     }
 
     public List<WhiteCard> getSelectedCards() {
         return selectedCards;
+    }
+
+    public int getWhiteCardCount() {
+        return whiteCards.size();
+    }
+
+    public void clearSelectedCards() {
+        selectedCards = null;
     }
 }

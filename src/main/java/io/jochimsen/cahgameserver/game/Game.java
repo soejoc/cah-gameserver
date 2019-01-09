@@ -76,10 +76,6 @@ public class Game {
         return players.get(round % players.size());
     }
 
-    public void incrementRound() {
-        ++round;
-    }
-
     public boolean isPlayer(final Player player) {
         return players.contains(player);
     }
@@ -108,6 +104,15 @@ public class Game {
 
                 gameMaster.say(selectCardResponse);
             }
+        }
+    }
+
+    public void selectWinnerCards(final List<WhiteCard> winnerCards) {
+        ++round;
+        playersSelectedCards.clear();
+
+        for(final Player player : players) {
+            player.clearSelectedCards();
         }
     }
 }

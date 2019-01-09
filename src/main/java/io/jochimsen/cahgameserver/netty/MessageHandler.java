@@ -2,8 +2,9 @@ package io.jochimsen.cahgameserver.netty;
 
 import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
 import io.jochimsen.cahframework.protocol.object.message.request.SelectCardsRequest;
-import io.jochimsen.cahframework.protocol.object.message.response.AddCardsResponse;
+import io.jochimsen.cahframework.protocol.object.message.request.SelectWinnerRequest;
 import io.jochimsen.cahframework.protocol.object.message.response.GameMasterResponse;
+import io.jochimsen.cahframework.protocol.object.message.response.NewRoundResponse;
 import io.jochimsen.cahframework.protocol.object.model.BlackCardModel;
 import io.jochimsen.cahframework.protocol.object.model.WhiteCardModel;
 import io.jochimsen.cahframework.session.Session;
@@ -78,6 +79,14 @@ public class MessageHandler extends SslServerProcessingHandler {
                 onSelectCards(player, selectCardsRequest);
                 break;
             }
+
+            case MessageCode.SELECT_WINNER_RQ: {
+                final SelectWinnerRequest selectWinnerRequest = new SelectWinnerRequest();
+                selectWinnerRequest.fromStream(rawMessage);
+
+                onSelectWinner(player, selectWinnerRequest);
+                break;
+            }
         }
     }
 
@@ -102,38 +111,42 @@ public class MessageHandler extends SslServerProcessingHandler {
             final Game game = gameRepository.register(player);
 
             if(game != null) {
-                final List<Player> players = game.getPlayers();
-                final BlackCard blackCard = blackCardRepository.getCards(game.getUsedBlackCards(), 1).get(0);
-                game.addUsedBlackCard(blackCard);
-
-                for(final Player playerGame : players) {
-                    final List<WhiteCard> whiteCards = whiteCardRepository.get(game.getUsedWhiteCards(), 3);
-                    game.addUsedWhiteCards(whiteCards);
-                    playerGame.addWhiteCard(whiteCards);
-
-                    final AddCardsResponse addCardsResponse = new AddCardsResponse();
-                    addCardsResponse.whiteCardModels = whiteCards.stream()
-                            .map(whiteCard -> {
-                                final WhiteCardModel whiteCardModel = new WhiteCardModel();
-                                whiteCardModel.whiteCardId = whiteCard.getWhiteCardId();
-
-                                return whiteCardModel;
-                            }).collect(Collectors.toList());
-
-                    final BlackCardModel blackCardModel = new BlackCardModel();
-                    blackCardModel.blackCardId = blackCard.getBlackCardId();
-
-                    addCardsResponse.blackCardModel = blackCardModel;
-
-                    playerGame.say(addCardsResponse);
-                }
-
-                final Player gameMaster = game.getGameMaster();
-                final GameMasterResponse gameMasterResponse = new GameMasterResponse();
-
-                gameMaster.say(gameMasterResponse);
+               newRound(game);
             }
         }
+    }
+
+    private void newRound(final Game game) {
+        final List<Player> players = game.getPlayers();
+        final BlackCard blackCard = blackCardRepository.getCards(game.getUsedBlackCards(), 1).get(0);
+        game.addUsedBlackCard(blackCard);
+
+        for(final Player playerGame : players) {
+            final List<WhiteCard> whiteCards = whiteCardRepository.get(game.getUsedWhiteCards(), 3 - playerGame.getWhiteCardCount());
+            game.addUsedWhiteCards(whiteCards);
+            playerGame.addWhiteCard(whiteCards);
+
+            final NewRoundResponse newRoundResponse = new NewRoundResponse();
+            newRoundResponse.whiteCardModels = whiteCards.stream()
+                    .map(whiteCard -> {
+                        final WhiteCardModel whiteCardModel = new WhiteCardModel();
+                        whiteCardModel.whiteCardId = whiteCard.getWhiteCardId();
+
+                        return whiteCardModel;
+                    }).collect(Collectors.toList());
+
+            final BlackCardModel blackCardModel = new BlackCardModel();
+            blackCardModel.blackCardId = blackCard.getBlackCardId();
+
+            newRoundResponse.blackCardModel = blackCardModel;
+
+            playerGame.say(newRoundResponse);
+        }
+
+        final Player gameMaster = game.getGameMaster();
+        final GameMasterResponse gameMasterResponse = new GameMasterResponse();
+
+        gameMaster.say(gameMasterResponse);
     }
 
     private void onRestartGame(final Player player, final RestartGameRequest restartGameRequest) {
@@ -155,5 +168,19 @@ public class MessageHandler extends SslServerProcessingHandler {
                 .map(whiteCardModel -> whiteCardRepository.get(whiteCardModel.whiteCardId)).collect(Collectors.toList());
 
         player.selectCards(selectedCards);
+    }
+
+    private void onSelectWinner(final Player player, final SelectWinnerRequest selectWinnerRequest) {
+        final Game game = player.getCurrentGame();
+
+        if(game.getGameMaster() != player) {
+            //TODo
+        }
+
+        final List<WhiteCard> winnerCards = selectWinnerRequest.whiteCardModels.stream()
+                .map(whiteCardModel -> whiteCardRepository.get(whiteCardModel.whiteCardId)).collect(Collectors.toList());
+
+        game.selectWinnerCards(winnerCards);
+        newRound(game);
     }
 }
