@@ -32,7 +32,7 @@ public class Game {
         me.nickName = player.getNickName();
 
         startGameResponse.me = me;
-        startGameResponse.antagonists = players.stream()
+        startGameResponse.player = players.stream()
                 .filter(p -> p != player)
                 .map(p -> {
                     final PlayerModel playerModel = new PlayerModel();
