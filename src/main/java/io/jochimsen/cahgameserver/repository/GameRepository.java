@@ -1,6 +1,6 @@
 package io.jochimsen.cahgameserver.repository;
 
-import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
+import io.jochimsen.cahframework.protocol.object.message.response.wait_for_game.WaitForGameResponse;
 import io.jochimsen.cahgameserver.game.Game;
 import io.jochimsen.cahgameserver.game.Player;
 import org.springframework.stereotype.Repository;

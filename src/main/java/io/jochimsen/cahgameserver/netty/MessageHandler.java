@@ -1,6 +1,10 @@
 package io.jochimsen.cahgameserver.netty;
 
-import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
+import io.jochimsen.cahframework.handler.inbound.SslHandshakeInboundMessageHandlerBase;
+import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
+import io.jochimsen.cahframework.protocol.object.message.request.restart_game.RestartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.request.start_game.StartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.response.finished_game.FinishedGameResponse;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
 import io.jochimsen.cahgameserver.repository.BlackCardRepository;
@@ -10,10 +14,6 @@ import io.jochimsen.cahgameserver.repository.WhiteCardRepository;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
-import io.jochimsen.cahframework.protocol.object.message.error.ErrorObject;
-import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
-public class MessageHandler extends SslServerProcessingHandler {
+public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
     @Autowired
     private WhiteCardRepository whiteCardRepository;
@@ -41,21 +41,19 @@ public class MessageHandler extends SslServerProcessingHandler {
     }
 
     @Override
-    protected void handleMessage(final int messageId, final ProtocolInputStream rawMessage, final Session session) {
+    protected void handleMessage(final int messageId, final ProtocolInputStream protocolInputStream, final Session session) {
         final Player player = (Player)session;
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = new StartGameRequest();
-                startGameRequest.fromStream(rawMessage);
+                final StartGameRequest startGameRequest = protocolInputStream.readProtocolObject(StartGameRequest.class);
 
                 onStartGame(player, startGameRequest);
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = new RestartGameRequest();
-                restartGameRequest.fromStream(rawMessage);
+                final RestartGameRequest restartGameRequest = protocolInputStream.readProtocolObject(RestartGameRequest.class);
 
                 onRestartGame(player, restartGameRequest);
                 break;
@@ -64,7 +62,7 @@ public class MessageHandler extends SslServerProcessingHandler {
     }
 
     @Override
-    protected void onErrorReceived(final ErrorObject errorObject, final Session session) {
+    protected void onErrorReceived(final ErrorMessage errorMessage, final Session session) {
 
     }
 
@@ -74,6 +72,11 @@ public class MessageHandler extends SslServerProcessingHandler {
 
         playerRepository.removePlayer(player);
         super.closeSession(session);
+    }
+
+    @Override
+    protected void onSuccessfulHandshake(final Session session) {
+
     }
 
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {

@@ -1,8 +1,7 @@
 package io.jochimsen.cahgameserver.game;
 
-import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
-import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
-import io.jochimsen.cahframework.protocol.object.model.PlayerModel;
+import io.jochimsen.cahframework.protocol.object.message.response.start_game.StartGameResponse;
+import io.jochimsen.cahframework.protocol.object.model.player.PlayerProtocolModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,19 +26,13 @@ public class Game {
         player.setSessionId(sessionId);
         startGameResponse.sessionId = sessionId;
 
-        final PlayerModel me = new PlayerModel();
-        me.playerId = player.getPlayerId();
-        me.nickName = player.getNickName();
-
-        startGameResponse.me = me;
-        startGameResponse.player = players.stream()
-                .filter(p -> p != player)
+        startGameResponse.players = players.stream()
                 .map(p -> {
-                    final PlayerModel playerModel = new PlayerModel();
-                    playerModel.nickName = p.getNickName();
-                    playerModel.playerId = p.getPlayerId();
+                    final PlayerProtocolModel playerProtocolModel = new PlayerProtocolModel();
+                    playerProtocolModel.nickName = p.getNickName();
+                    playerProtocolModel.playerId = p.getPlayerId();
 
-                    return playerModel;
+                    return playerProtocolModel;
                 }).collect(Collectors.toList());
 
         player.say(startGameResponse);
