@@ -16,12 +16,18 @@ import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
 import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.net.InetSocketAddress;
 
 @Component
 @ChannelHandler.Sharable
 public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
     @Autowired
     private WhiteCardRepository whiteCardRepository;
@@ -42,6 +48,8 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
     @Override
     protected void handleMessage(final int messageId, final ProtocolInputStream protocolInputStream, final Session session) {
+        logger.debug("Message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
+
         final Player player = (Player)session;
 
         switch (messageId) {
@@ -57,6 +65,11 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
                 onRestartGame(player, restartGameRequest);
                 break;
+            }
+
+            default: {
+                logger.info("Unknown message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
+                closeSession(session);
             }
         }
     }
