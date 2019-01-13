@@ -1,6 +1,7 @@
 package io.jochimsen.cahgameserver.netty;
 
 import io.jochimsen.cahframework.handler.inbound.SslHandshakeInboundMessageHandlerBase;
+import io.jochimsen.cahframework.protocol.object.ProtocolObject;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
 import io.jochimsen.cahframework.protocol.object.message.request.restart_game.RestartGameRequest;
 import io.jochimsen.cahframework.protocol.object.message.request.start_game.StartGameRequest;
@@ -54,14 +55,14 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = protocolInputStream.readProtocolObject(StartGameRequest.class);
+                final StartGameRequest startGameRequest = ProtocolObject.fromProtocolInputStream(StartGameRequest.class, protocolInputStream);
 
                 onStartGame(player, startGameRequest);
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = protocolInputStream.readProtocolObject(RestartGameRequest.class);
+                final RestartGameRequest restartGameRequest = ProtocolObject.fromProtocolInputStream(RestartGameRequest.class, protocolInputStream);
 
                 onRestartGame(player, restartGameRequest);
                 break;
