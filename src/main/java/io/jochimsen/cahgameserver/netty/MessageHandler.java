@@ -1,11 +1,10 @@
 package io.jochimsen.cahgameserver.netty;
 
 import io.jochimsen.cahframework.handler.inbound.SslHandshakeInboundMessageHandlerBase;
-import io.jochimsen.cahframework.protocol.object.ProtocolObject;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
-import io.jochimsen.cahframework.protocol.object.message.request.restart_game.RestartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.request.start_game.StartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.response.finished_game.FinishedGameResponse;
+import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
 import io.jochimsen.cahgameserver.repository.BlackCardRepository;
@@ -48,21 +47,21 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
     }
 
     @Override
-    protected void handleMessage(final int messageId, final ProtocolInputStream protocolInputStream, final Session session) {
+    protected void handleMessage(final int messageId, final ProtocolInputStream protocolInputStream, final Session session) throws Exception {
         logger.debug("Message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
 
         final Player player = (Player)session;
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = ProtocolObject.fromProtocolInputStream(StartGameRequest.class, protocolInputStream);
+                final StartGameRequest startGameRequest = protocolInputStream.readObject(StartGameRequest.class);
 
                 onStartGame(player, startGameRequest);
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = ProtocolObject.fromProtocolInputStream(RestartGameRequest.class, protocolInputStream);
+                final RestartGameRequest restartGameRequest = protocolInputStream.readObject(RestartGameRequest.class);
 
                 onRestartGame(player, restartGameRequest);
                 break;
@@ -112,5 +111,10 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
             final FinishedGameResponse finishedGameResponse = new FinishedGameResponse();
             player.say(finishedGameResponse);
         }
+    }
+
+    @Override
+    protected void onUncaughtException(final Session session, final Throwable throwable) {
+
     }
 }

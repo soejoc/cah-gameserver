@@ -1,7 +1,7 @@
 package io.jochimsen.cahgameserver.game;
 
-import io.jochimsen.cahframework.protocol.object.message.response.start_game.StartGameResponse;
-import io.jochimsen.cahframework.protocol.object.model.player.PlayerProtocolModel;
+import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
+import io.jochimsen.cahframework.protocol.object.model.PlayerProtocolModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
