@@ -54,14 +54,14 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = protocolInputStream.readObject(StartGameRequest.class);
+                final StartGameRequest startGameRequest = protocolInputStream.readObject();
 
                 onStartGame(player, startGameRequest);
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = protocolInputStream.readObject(RestartGameRequest.class);
+                final RestartGameRequest restartGameRequest = protocolInputStream.readObject();
 
                 onRestartGame(player, restartGameRequest);
                 break;
@@ -94,13 +94,13 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
         if(player.getCurrentGame() == null) {
-            player.setNickName(startGameRequest.nickName);
+            player.setNickName(startGameRequest.getNickName());
             gameRepository.register(player);
         }
     }
 
     private void onRestartGame(final Player player, final RestartGameRequest restartGameRequest) {
-        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.sessionKey);
+        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.getSessionKey());
 
         if(activePlayer != null) {
             playerRepository.reassignPlayer(activePlayer, player);

@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Repository
 public class GameRepository {
-    private static final int PLAYER_SIZE_FOR_GAME = 4;
+    private static final int PLAYER_SIZE_FOR_GAME = 2;
 
     private final List<Game> games = new LinkedList<>();
     private final Queue<Player> playerQueue = new ConcurrentLinkedQueue<>();

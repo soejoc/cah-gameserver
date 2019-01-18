@@ -20,21 +20,14 @@ public class Game {
     }
 
     public void startGame(final Player player) {
-        final StartGameResponse startGameResponse = new StartGameResponse();
-
         final UUID sessionId = UUID.randomUUID();
         player.setSessionId(sessionId);
-        startGameResponse.sessionId = sessionId;
 
-        startGameResponse.players = players.stream()
-                .map(p -> {
-                    final PlayerProtocolModel playerProtocolModel = new PlayerProtocolModel();
-                    playerProtocolModel.nickName = p.getNickName();
-                    playerProtocolModel.playerId = p.getPlayerId();
+        final List<PlayerProtocolModel> playerProtocolModels = players.stream()
+                .map(p -> new PlayerProtocolModel(p.getPlayerId(), p.getNickName()))
+                .collect(Collectors.toList());
 
-                    return playerProtocolModel;
-                }).collect(Collectors.toList());
-
+        final StartGameResponse startGameResponse = new StartGameResponse(playerProtocolModels, sessionId);
         player.say(startGameResponse);
     }
 }
