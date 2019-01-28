@@ -1,6 +1,10 @@
 package io.jochimsen.cahgameserver.netty;
 
-import io.jochimsen.cahframework.channel_handler.SslServerProcessingHandler;
+import io.jochimsen.cahframework.handler.inbound.SslHandshakeInboundMessageHandlerBase;
+import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
+import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
+import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahgameserver.game.Game;
 import io.jochimsen.cahgameserver.repository.BlackCardRepository;
@@ -10,18 +14,20 @@ import io.jochimsen.cahgameserver.repository.WhiteCardRepository;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
-import io.jochimsen.cahframework.protocol.object.message.error.ErrorObject;
-import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.InetSocketAddress;
+
 @Component
 @ChannelHandler.Sharable
-public class MessageHandler extends SslServerProcessingHandler {
+public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
     @Autowired
     private WhiteCardRepository whiteCardRepository;
@@ -41,30 +47,35 @@ public class MessageHandler extends SslServerProcessingHandler {
     }
 
     @Override
-    protected void handleMessage(final int messageId, final ProtocolInputStream rawMessage, final Session session) {
+    protected void handleMessage(final int messageId, final ProtocolInputStream protocolInputStream, final Session session) throws Exception {
+        logger.debug("Message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
+
         final Player player = (Player)session;
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = new StartGameRequest();
-                startGameRequest.fromStream(rawMessage);
+                final StartGameRequest startGameRequest = protocolInputStream.readObject();
 
                 onStartGame(player, startGameRequest);
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = new RestartGameRequest();
-                restartGameRequest.fromStream(rawMessage);
+                final RestartGameRequest restartGameRequest = protocolInputStream.readObject();
 
                 onRestartGame(player, restartGameRequest);
                 break;
+            }
+
+            default: {
+                logger.info("Unknown message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
+                closeSession(session);
             }
         }
     }
 
     @Override
-    protected void onErrorReceived(final ErrorObject errorObject, final Session session) {
+    protected void onErrorReceived(final ErrorMessage errorMessage, final Session session) {
 
     }
 
@@ -76,15 +87,20 @@ public class MessageHandler extends SslServerProcessingHandler {
         super.closeSession(session);
     }
 
+    @Override
+    protected void onSuccessfulHandshake(final Session session) {
+
+    }
+
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
         if(player.getCurrentGame() == null) {
-            player.setNickName(startGameRequest.nickName);
+            player.setNickName(startGameRequest.getNickName());
             gameRepository.register(player);
         }
     }
 
     private void onRestartGame(final Player player, final RestartGameRequest restartGameRequest) {
-        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.sessionKey);
+        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.getSessionKey());
 
         if(activePlayer != null) {
             playerRepository.reassignPlayer(activePlayer, player);
@@ -95,5 +111,10 @@ public class MessageHandler extends SslServerProcessingHandler {
             final FinishedGameResponse finishedGameResponse = new FinishedGameResponse();
             player.say(finishedGameResponse);
         }
+    }
+
+    @Override
+    protected void onUncaughtException(final Session session, final Throwable throwable) {
+
     }
 }

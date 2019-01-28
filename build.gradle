@@ -14,6 +14,20 @@ buildscript {
 	}
 }
 
+static def getDockerTag() {
+	def branch = ""
+	def proc = "git rev-parse --abbrev-ref HEAD".execute()
+	proc.in.eachLine { line -> branch = line }
+	proc.err.eachLine { line -> println line }
+	proc.waitFor()
+
+	if(branch == "master") {
+		branch = "latest"
+	}
+
+	branch
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
@@ -30,7 +44,7 @@ task unpack(type: Copy) {
 	into("build/dependency")
 }
 docker {
-	name "${dockerOrganization}/${bootJar.baseName}"
+	name "${dockerOrganization}/${bootJar.baseName}:${getDockerTag()}"
 	copySpec.from(tasks.unpack.outputs).into("dependency")
 	buildArgs(['DEPENDENCY': "dependency"])
 }
@@ -48,8 +62,7 @@ dependencies {
 	compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 
-	implementation group: 'io.netty', name: 'netty-all', version: '4.1.24.Final'
-	compile files('../cah-framework/build/libs/cah-framework.jar')
+	implementation project(path: ":cah-framework")
 
 	// Retrofit
 	def retrofit_version = "2.5.0"

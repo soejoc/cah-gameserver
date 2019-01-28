@@ -1,8 +1,7 @@
 package io.jochimsen.cahgameserver.game;
 
 import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
-import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
-import io.jochimsen.cahframework.protocol.object.model.PlayerModel;
+import io.jochimsen.cahframework.protocol.object.model.PlayerProtocolModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,27 +20,14 @@ public class Game {
     }
 
     public void startGame(final Player player) {
-        final StartGameResponse startGameResponse = new StartGameResponse();
-
         final UUID sessionId = UUID.randomUUID();
         player.setSessionId(sessionId);
-        startGameResponse.sessionId = sessionId;
 
-        final PlayerModel me = new PlayerModel();
-        me.playerId = player.getPlayerId();
-        me.nickName = player.getNickName();
+        final List<PlayerProtocolModel> playerProtocolModels = players.stream()
+                .map(p -> new PlayerProtocolModel(p.getPlayerId(), p.getNickName()))
+                .collect(Collectors.toList());
 
-        startGameResponse.me = me;
-        startGameResponse.player = players.stream()
-                .filter(p -> p != player)
-                .map(p -> {
-                    final PlayerModel playerModel = new PlayerModel();
-                    playerModel.nickName = p.getNickName();
-                    playerModel.playerId = p.getPlayerId();
-
-                    return playerModel;
-                }).collect(Collectors.toList());
-
+        final StartGameResponse startGameResponse = new StartGameResponse(playerProtocolModels, sessionId);
         player.say(startGameResponse);
     }
 }

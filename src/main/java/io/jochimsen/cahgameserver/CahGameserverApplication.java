@@ -1,6 +1,6 @@
 package io.jochimsen.cahgameserver;
 
-import io.jochimsen.cahframework.initializer.SslServerInitializer;
+import io.jochimsen.cahframework.initializer.SslProtocolMessageChannelInitializer;
 import io.jochimsen.cahgameserver.config.ServerProperties;
 import io.jochimsen.cahgameserver.netty.MessageHandler;
 import io.jochimsen.cahgameserver.netty.TCPServer;
@@ -84,7 +84,7 @@ public class CahGameserverApplication {
 
 	@Bean
 	public ChannelHandler channelHandler(final MessageHandler messageHandler, final SslContext sslContext) {
-		return new SslServerInitializer(sslContext, messageHandler);
+		return new SslProtocolMessageChannelInitializer(sslContext, messageHandler);
 	}
 
 	@Bean(name = "baseUrl")
