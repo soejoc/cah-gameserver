@@ -1,28 +1,11 @@
 package io.jochimsen.cahgameserver;
 
-import io.jochimsen.cahframework.initializer.ProtocolMessageChannelInitializer;
-import io.jochimsen.cahframework.initializer.SslProtocolMessageChannelInitializer;
 import io.jochimsen.cahgameserver.config.ServerProperties;
-import io.jochimsen.cahgameserver.netty.MessageHandler;
 import io.jochimsen.cahgameserver.netty.TCPServer;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-
-import java.net.InetSocketAddress;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ServerProperties.class)
