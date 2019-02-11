@@ -2,6 +2,7 @@ package io.jochimsen.cahgameserver.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 
+@RequiredArgsConstructor
 @Component
 public class TCPServer {
     private static final Logger logger = LoggerFactory.getLogger(TCPServer.class);
@@ -18,11 +20,6 @@ public class TCPServer {
     private final InetSocketAddress tcpPort;
 
     private Channel serverChannel;
-
-    public TCPServer(final ServerBootstrap serverBootstrap, final InetSocketAddress tcpPort) {
-        this.serverBootstrap = serverBootstrap;
-        this.tcpPort = tcpPort;
-    }
 
     public void start() {
         try {

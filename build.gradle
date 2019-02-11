@@ -69,4 +69,9 @@ dependencies {
 	implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
 	implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 	implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+	// Lombok
+	def lombok_version = "1.18.4"
+	compileOnly "org.projectlombok:lombok:$lombok_version"
+	annotationProcessor "org.projectlombok:lombok:$lombok_version"
 }

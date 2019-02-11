@@ -1,5 +1,6 @@
 package io.jochimsen.cahgameserver.netty;
 
+import io.jochimsen.cahframework.handler.inbound.InboundMessageHandlerBase;
 import io.jochimsen.cahframework.handler.inbound.SslHandshakeInboundMessageHandlerBase;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
 import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
@@ -25,7 +26,7 @@ import java.net.InetSocketAddress;
 
 @Component
 @ChannelHandler.Sharable
-public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
+public class MessageHandler extends InboundMessageHandlerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
@@ -85,11 +86,6 @@ public class MessageHandler extends SslHandshakeInboundMessageHandlerBase {
 
         playerRepository.removePlayer(player);
         super.closeSession(session);
-    }
-
-    @Override
-    protected void onSuccessfulHandshake(final Session session) {
-
     }
 
     private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
