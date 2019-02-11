@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.backend.global.response;
+package io.jochimsen.cahgameserver.backend.response;
 
 public class CheckHashResponse {
     public boolean hashEqual;

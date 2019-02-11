@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.backend.black_card.response;
+package io.jochimsen.cahgameserver.backend.response;
 
 public class BlackCardResponse {
     public long blackCardId;

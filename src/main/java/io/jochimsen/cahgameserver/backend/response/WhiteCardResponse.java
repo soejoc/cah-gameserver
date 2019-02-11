@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.backend.white_card.response;
+package io.jochimsen.cahgameserver.backend.response;
 
 public class WhiteCardResponse {
     public long whiteCardId;
