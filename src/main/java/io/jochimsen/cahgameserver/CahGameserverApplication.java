@@ -10,10 +10,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 @EnableConfigurationProperties(ServerProperties.class)
 public class CahGameserverApplication {
-	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(CahGameserverApplication.class, args);
+	public static void main(final String[] args) {
+		final ConfigurableApplicationContext context = SpringApplication.run(CahGameserverApplication.class, args);
 
-		TCPServer tcpServer = context.getBean(TCPServer.class);
+		final TCPServer tcpServer = context.getBean(TCPServer.class);
 		tcpServer.start();
 	}
 }

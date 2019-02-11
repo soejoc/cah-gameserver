@@ -24,7 +24,7 @@ public class TCPServer {
     public void start() {
         try {
             serverChannel = serverBootstrap.bind(tcpPort).sync().channel().closeFuture().sync().channel();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             logger.error("Exception caught while server was running: {}", e);
         }
     }

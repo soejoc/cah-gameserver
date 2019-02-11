@@ -28,7 +28,7 @@ public class NettyConfig {
 
     @Bean(name = "serverBootstrap")
     public ServerBootstrap bootstrap(final ChannelHandler channelHandler) {
-        ServerBootstrap b = new ServerBootstrap();
+        final ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup(), workerGroup())
                 .channel(NioServerSocketChannel.class)
                 .childHandler(channelHandler)
@@ -62,7 +62,7 @@ public class NettyConfig {
                     .build();
 
             return sslCtx;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Exception caught while creating SSLContext: {}", e);
         }
 
