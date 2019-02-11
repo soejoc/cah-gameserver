@@ -17,6 +17,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
 import io.jochimsen.cahgameserver.game.Player;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +27,13 @@ import java.net.InetSocketAddress;
 
 @Component
 @ChannelHandler.Sharable
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class MessageHandler extends InboundMessageHandlerBase {
-
     private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
-    @Autowired
     private WhiteCardRepository whiteCardRepository;
-
-    @Autowired
     private BlackCardRepository blackCardRepository;
-
-    @Autowired
     private GameRepository gameRepository;
-
-    @Autowired
     private PlayerRepository playerRepository;
 
     @Override
