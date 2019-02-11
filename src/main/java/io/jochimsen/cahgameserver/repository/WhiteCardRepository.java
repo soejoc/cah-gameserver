@@ -1,8 +1,8 @@
 package io.jochimsen.cahgameserver.repository;
 
-import io.jochimsen.cahgameserver.backend.global.response.HashResponse;
-import io.jochimsen.cahgameserver.backend.white_card.WhiteCardController;
-import io.jochimsen.cahgameserver.backend.white_card.response.WhiteCardResponse;
+import io.jochimsen.cahgameserver.backend.api.WhiteCardApi;
+import io.jochimsen.cahgameserver.backend.response.HashResponse;
+import io.jochimsen.cahgameserver.backend.response.WhiteCardResponse;
 import io.jochimsen.cahgameserver.game.card.WhiteCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,12 +17,12 @@ public class WhiteCardRepository {
     private final Map<Long, WhiteCard> whiteCardMap;
 
     @Autowired
-    public WhiteCardRepository(final WhiteCardController whiteCardController) {
-        final HashResponse<List<WhiteCardResponse>> hashResponse = whiteCardController.getWhiteCards().blockingGet();
-        final List<WhiteCardResponse> whiteCardsResponse = hashResponse.data;
+    public WhiteCardRepository(final WhiteCardApi whiteCardApi) {
+        final HashResponse<List<WhiteCardResponse>> hashResponse = whiteCardApi.getWhiteCards().blockingGet();
+        final List<WhiteCardResponse> whiteCardsResponse = hashResponse.getData();
 
         whiteCardMap = whiteCardsResponse.stream()
-                .map(whiteCardResponse -> new WhiteCard(whiteCardResponse.whiteCardId, whiteCardResponse.text))
+                .map(whiteCardResponse -> new WhiteCard(whiteCardResponse.getWhiteCardId(), whiteCardResponse.getText()))
                 .collect(Collectors.toMap(WhiteCard::getWhiteCardId, Function.identity()));
     }
 }
