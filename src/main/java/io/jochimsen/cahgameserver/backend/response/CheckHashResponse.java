@@ -1,5 +1,8 @@
 package io.jochimsen.cahgameserver.backend.response;
 
+import lombok.Data;
+
+@Data
 public class CheckHashResponse {
-    public boolean hashEqual;
+    private boolean hashEqual;
 }

@@ -1,7 +1,10 @@
 package io.jochimsen.cahgameserver.backend.response;
 
+import lombok.Data;
+
+@Data
 public class BlackCardResponse {
-    public long blackCardId;
-    public String text;
-    public int blankCount;
+    private long blackCardId;
+    private String text;
+    private int blankCount;
 }

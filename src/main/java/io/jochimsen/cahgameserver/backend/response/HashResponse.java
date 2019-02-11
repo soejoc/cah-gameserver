@@ -1,6 +1,9 @@
 package io.jochimsen.cahgameserver.backend.response;
 
+import lombok.Data;
+
+@Data
 public class HashResponse<T> {
-    public T data;
-    public int hash;
+    private T data;
+    private int hash;
 }

@@ -1,6 +1,9 @@
 package io.jochimsen.cahgameserver.backend.response;
 
+import lombok.Data;
+
+@Data
 public class WhiteCardResponse {
-    public long whiteCardId;
-    public String text;
+    private long whiteCardId;
+    private String text;
 }

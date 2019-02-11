@@ -19,10 +19,10 @@ public class BlackCardRepository {
     @Autowired
     public BlackCardRepository(final BlackCardApi blackCardApi) {
         final HashResponse<List<BlackCardResponse>> hashResponse = blackCardApi.getBlackCards().blockingGet();
-        final List<BlackCardResponse> blackCardsResponse = hashResponse.data;
+        final List<BlackCardResponse> blackCardsResponse = hashResponse.getData();
 
         blackCardMap = blackCardsResponse.stream()
-                .map(blackCardResponse -> new BlackCard(blackCardResponse.blackCardId, blackCardResponse.text, blackCardResponse.blankCount))
+                .map(blackCardResponse -> new BlackCard(blackCardResponse.getBlackCardId(), blackCardResponse.getText(), blackCardResponse.getBlankCount()))
                 .collect(Collectors.toMap(BlackCard::getBlackCardId, Function.identity()));
     }
 }

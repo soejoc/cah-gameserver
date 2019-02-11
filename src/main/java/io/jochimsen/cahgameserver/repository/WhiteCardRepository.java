@@ -19,10 +19,10 @@ public class WhiteCardRepository {
     @Autowired
     public WhiteCardRepository(final WhiteCardApi whiteCardApi) {
         final HashResponse<List<WhiteCardResponse>> hashResponse = whiteCardApi.getWhiteCards().blockingGet();
-        final List<WhiteCardResponse> whiteCardsResponse = hashResponse.data;
+        final List<WhiteCardResponse> whiteCardsResponse = hashResponse.getData();
 
         whiteCardMap = whiteCardsResponse.stream()
-                .map(whiteCardResponse -> new WhiteCard(whiteCardResponse.whiteCardId, whiteCardResponse.text))
+                .map(whiteCardResponse -> new WhiteCard(whiteCardResponse.getWhiteCardId(), whiteCardResponse.getText()))
                 .collect(Collectors.toMap(WhiteCard::getWhiteCardId, Function.identity()));
     }
 }
