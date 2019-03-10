@@ -1,6 +1,6 @@
 package io.jochimsen.cahgameserver.netty;
 
-import io.jochimsen.cahframework.handler.inbound.InboundMessageHandlerBase;
+import io.jochimsen.cahframework.handler.inbound.InboundHandlerBase;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
 import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
@@ -27,8 +27,8 @@ import java.net.InetSocketAddress;
 @Component
 @ChannelHandler.Sharable
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
-public class MessageHandler extends InboundMessageHandlerBase {
-    private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
+public class InboundHandler extends InboundHandlerBase {
+    private static final Logger logger = LoggerFactory.getLogger(InboundHandler.class);
 
     private WhiteCardRepository whiteCardRepository;
     private BlackCardRepository blackCardRepository;

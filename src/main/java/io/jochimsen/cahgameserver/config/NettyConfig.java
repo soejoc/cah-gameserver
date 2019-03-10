@@ -1,7 +1,7 @@
 package io.jochimsen.cahgameserver.config;
 
 import io.jochimsen.cahframework.initializer.ProtocolMessageChannelInitializer;
-import io.jochimsen.cahgameserver.netty.MessageHandler;
+import io.jochimsen.cahgameserver.netty.InboundHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -70,8 +70,8 @@ public class NettyConfig {
     }
 
     @Bean
-    public ChannelHandler channelHandler(final MessageHandler messageHandler) {
-        return new ProtocolMessageChannelInitializer(messageHandler);
+    public ChannelHandler channelHandler(final InboundHandler inboundHandler) {
+        return new ProtocolMessageChannelInitializer(inboundHandler);
     }
 
     @Bean(name = "baseUrl")
