@@ -33,7 +33,11 @@ task unpack(type: Copy) {
 	dependsOn bootJar
 	from(zipTree(tasks.bootJar.outputs.files.singleFile))
 	into("build/dependency")
+	rename { String fileName ->
+		fileName.replace("${configurations.springinstrument.singleFile.name}", "spring-instrument.jar")
+	}
 }
+
 docker {
 	name "${dockerOrganization}/${bootJar.baseName}:${getDockerTag()}"
 	copySpec.from(tasks.unpack.outputs).into("dependency")
@@ -71,9 +75,15 @@ dependencies {
 }
 
 test.doFirst {
-	jvmArgs "-javaagent:${configurations.springinstrument.asPath}"
+	jvmArgs = [
+			"-noverify",
+			"-javaagent:${configurations.springinstrument.asPath}"
+	]
 }
 
 bootRun {
-	jvmArgs "-javaagent:${configurations.springinstrument.asPath}"
+	jvmArgs = [
+			"-noverify",
+			"-javaagent:${configurations.springinstrument.asPath}"
+	]
 }
