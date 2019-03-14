@@ -1,15 +1,20 @@
-package io.jochimsen.cahgameserver.netty;
+package io.jochimsen.cahgameserver.network;
 
 import io.jochimsen.cahframework.handler.inbound.InboundHandlerBase;
 import io.jochimsen.cahframework.protocol.object.message.MessageCode;
+import io.jochimsen.cahframework.protocol.object.message.ProtocolMessage;
+import io.jochimsen.cahframework.protocol.object.message.RequestMessage;
 import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
 import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
 import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
 import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahframework.session.Session;
 import io.jochimsen.cahframework.util.ProtocolInputStream;
-import io.jochimsen.cahgameserver.game.Game;
-import io.jochimsen.cahgameserver.game.Player;
+import io.jochimsen.cahgameserver.message_handler.RestartGameHandler;
+import io.jochimsen.cahgameserver.message_handler.ServerMessageHandler;
+import io.jochimsen.cahgameserver.message_handler.StartGameHandler;
+import io.jochimsen.cahgameserver.model.Game;
+import io.jochimsen.cahgameserver.model.Player;
 import io.jochimsen.cahgameserver.repository.BlackCardRepository;
 import io.jochimsen.cahgameserver.repository.GameRepository;
 import io.jochimsen.cahgameserver.repository.PlayerRepository;
@@ -21,10 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.net.InetSocketAddress;
 
-@Component
+@Service
 @ChannelHandler.Sharable
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class InboundHandler extends InboundHandlerBase {
@@ -45,19 +51,19 @@ public class InboundHandler extends InboundHandlerBase {
         logger.debug("Message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
 
         final Player player = (Player)session;
+        ServerMessageHandler messageHandler = null;
+        RequestMessage protocolMessage = null;
 
         switch (messageId) {
             case MessageCode.START_GAME_RQ: {
-                final StartGameRequest startGameRequest = protocolInputStream.readObject();
-
-                onStartGame(player, startGameRequest);
+                protocolMessage = protocolInputStream.readObject(StartGameRequest.class);
+                messageHandler = new StartGameHandler();
                 break;
             }
 
             case MessageCode.RESTART_GAME_RQ: {
-                final RestartGameRequest restartGameRequest = protocolInputStream.readObject();
-
-                onRestartGame(player, restartGameRequest);
+                protocolMessage = protocolInputStream.readObject(RestartGameRequest.class);
+                messageHandler = new RestartGameHandler();
                 break;
             }
 
@@ -65,6 +71,11 @@ public class InboundHandler extends InboundHandlerBase {
                 logger.info("Unknown message ({}) received from: {}", messageId, ((InetSocketAddress)session.getChannelHandlerContext().channel().remoteAddress()).getAddress().getHostAddress());
                 closeSession(session);
             }
+        }
+
+        if(messageHandler != null) {
+            //noinspection unchecked
+            messageHandler.handleMessage(protocolMessage, player);
         }
     }
 
@@ -79,27 +90,6 @@ public class InboundHandler extends InboundHandlerBase {
 
         playerRepository.removePlayer(player);
         super.closeSession(session);
-    }
-
-    private void onStartGame(final Player player, final StartGameRequest startGameRequest) {
-        if(player.getCurrentGame() == null) {
-            player.setNickName(startGameRequest.getNickName());
-            gameRepository.register(player);
-        }
-    }
-
-    private void onRestartGame(final Player player, final RestartGameRequest restartGameRequest) {
-        final Player activePlayer = playerRepository.getPlayerBySessionId(restartGameRequest.getSessionKey());
-
-        if(activePlayer != null) {
-            playerRepository.reassignPlayer(activePlayer, player);
-
-            final Game currentGame = activePlayer.getCurrentGame();
-            currentGame.startGame(activePlayer);
-        } else {
-            final FinishedGameResponse finishedGameResponse = new FinishedGameResponse();
-            player.say(finishedGameResponse);
-        }
     }
 
     @Override

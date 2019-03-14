@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.game.card;
+package io.jochimsen.cahgameserver.model;
 
 import lombok.Value;
 

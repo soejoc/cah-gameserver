@@ -3,7 +3,7 @@ package io.jochimsen.cahgameserver.repository;
 import io.jochimsen.cahgameserver.backend.api.BlackCardApi;
 import io.jochimsen.cahgameserver.backend.response.BlackCardResponse;
 import io.jochimsen.cahgameserver.backend.response.HashResponse;
-import io.jochimsen.cahgameserver.game.card.BlackCard;
+import io.jochimsen.cahgameserver.model.BlackCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

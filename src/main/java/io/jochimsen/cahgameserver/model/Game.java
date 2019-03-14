@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.game;
+package io.jochimsen.cahgameserver.model;
 
 import io.jochimsen.cahframework.protocol.object.message.response.StartGameResponse;
 import io.jochimsen.cahframework.protocol.object.model.PlayerProtocolModel;

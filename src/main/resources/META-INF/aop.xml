@@ -1,0 +1,6 @@
+<aspectj>
+    <weaver options="-verbose -showWeaveInfo">
+        <!-- only weave classes with @Configurable interface -->
+        <include within="io.jochimsen.cahgameserver..*"/>
+    </weaver>
+</aspectj>

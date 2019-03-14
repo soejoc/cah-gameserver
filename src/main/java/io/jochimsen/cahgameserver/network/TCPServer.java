@@ -1,4 +1,4 @@
-package io.jochimsen.cahgameserver.netty;
+package io.jochimsen.cahgameserver.network;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class TCPServer {
     private static final Logger logger = LoggerFactory.getLogger(TCPServer.class);
 

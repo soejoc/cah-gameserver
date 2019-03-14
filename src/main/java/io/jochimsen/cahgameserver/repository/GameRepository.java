@@ -1,8 +1,8 @@
 package io.jochimsen.cahgameserver.repository;
 
 import io.jochimsen.cahframework.protocol.object.message.response.WaitForGameResponse;
-import io.jochimsen.cahgameserver.game.Game;
-import io.jochimsen.cahgameserver.game.Player;
+import io.jochimsen.cahgameserver.model.Game;
+import io.jochimsen.cahgameserver.model.Player;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;

@@ -1,6 +1,6 @@
 package io.jochimsen.cahgameserver.repository;
 
-import io.jochimsen.cahgameserver.game.Player;
+import io.jochimsen.cahgameserver.model.Player;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Repository;
 

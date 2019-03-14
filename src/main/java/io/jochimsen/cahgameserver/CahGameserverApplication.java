@@ -1,7 +1,7 @@
 package io.jochimsen.cahgameserver;
 
 import io.jochimsen.cahgameserver.config.ServerProperties;
-import io.jochimsen.cahgameserver.netty.TCPServer;
+import io.jochimsen.cahgameserver.network.TCPServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
