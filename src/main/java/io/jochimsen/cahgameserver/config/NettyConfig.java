@@ -1,7 +1,7 @@
 package io.jochimsen.cahgameserver.config;
 
-import io.jochimsen.cahframework.initializer.ProtocolMessageChannelInitializer;
 import io.jochimsen.cahgameserver.network.InboundHandler;
+import io.jochimsen.collo.initializer.ProtocolMessageChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;

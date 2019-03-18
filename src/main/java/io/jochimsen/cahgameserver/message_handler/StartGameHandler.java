@@ -1,8 +1,8 @@
 package io.jochimsen.cahgameserver.message_handler;
 
-import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
 import io.jochimsen.cahgameserver.model.Player;
 import io.jochimsen.cahgameserver.repository.GameRepository;
+import io.jochimsen.cahprotocol.message.request.StartGameRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

@@ -1,11 +1,11 @@
 package io.jochimsen.cahgameserver.network;
 
-import io.jochimsen.cahframework.handler.inbound.InboundHandlerBase;
-import io.jochimsen.cahframework.protocol.object.message.RequestMessage;
-import io.jochimsen.cahframework.protocol.object.message.error.ErrorMessage;
-import io.jochimsen.cahframework.util.MessageMapper;
 import io.jochimsen.cahgameserver.model.Player;
 import io.jochimsen.cahgameserver.repository.PlayerRepository;
+import io.jochimsen.collo.handler.inbound.InboundHandlerBase;
+import io.jochimsen.collo.message.MessageMapper;
+import io.jochimsen.collo.protocol.ErrorMessage;
+import io.jochimsen.collo.protocol.RequestMessage;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;

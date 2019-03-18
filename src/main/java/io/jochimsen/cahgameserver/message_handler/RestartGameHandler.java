@@ -1,11 +1,10 @@
 package io.jochimsen.cahgameserver.message_handler;
 
-import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.response.FinishedGameResponse;
 import io.jochimsen.cahgameserver.model.Game;
 import io.jochimsen.cahgameserver.model.Player;
 import io.jochimsen.cahgameserver.repository.PlayerRepository;
+import io.jochimsen.cahprotocol.message.request.RestartGameRequest;
+import io.jochimsen.cahprotocol.message.response.FinishedGameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

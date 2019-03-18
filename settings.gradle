@@ -1,4 +1,7 @@
 rootProject.name = 'cah-gameserver'
 
-include ':cah-framework'
-project(':cah-framework').projectDir = new File('../cah-framework')
+include ':collo'
+project(':collo').projectDir = new File('../../collo')
+
+include ':cah-protocol'
+project(':cah-protocol').projectDir = new File('../cah-protocol')

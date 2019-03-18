@@ -1,13 +1,13 @@
 package io.jochimsen.cahgameserver.util;
 
-import io.jochimsen.cahframework.protocol.object.message.MessageCode;
-import io.jochimsen.cahframework.protocol.object.message.RequestMessage;
-import io.jochimsen.cahframework.protocol.object.message.request.RestartGameRequest;
-import io.jochimsen.cahframework.protocol.object.message.request.StartGameRequest;
-import io.jochimsen.cahframework.util.MessageMapper;
 import io.jochimsen.cahgameserver.message_handler.RestartGameHandler;
 import io.jochimsen.cahgameserver.message_handler.StartGameHandler;
 import io.jochimsen.cahgameserver.model.Player;
+import io.jochimsen.cahprotocol.message.MessageCode;
+import io.jochimsen.cahprotocol.message.request.RestartGameRequest;
+import io.jochimsen.cahprotocol.message.request.StartGameRequest;
+import io.jochimsen.collo.message.MessageMapper;
+import io.jochimsen.collo.protocol.RequestMessage;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,7 @@
 package io.jochimsen.cahgameserver.model;
 
-import io.jochimsen.cahframework.protocol.object.message.ResponseMessage;
-import io.jochimsen.cahframework.session.Session;
+import io.jochimsen.collo.protocol.ResponseMessage;
+import io.jochimsen.collo.session.Session;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.Setter;
