@@ -14,6 +14,7 @@ gameserver:
   keep-alive: true
   backlog: 100
   webservice-url: https://api.cah.jochimsen.io/
+  default-player-per-game: 2
 
 ---
 
@@ -27,3 +28,4 @@ gameserver:
   keep-alive: ${KEEP_ALIVE:true}
   backlog: ${BACKLOG:100}
   webservice-url: ${WEBSERVICE_URL}
+  default-player-per-game: ${DEFAULT_PLAYER_PER_GAME}

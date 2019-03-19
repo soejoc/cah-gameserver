@@ -14,4 +14,5 @@ public class ServerProperties {
     private boolean keepAlive;
     private int backlog;
     private String webserviceUrl;
+    private int defaultPlayerPerGame;
 }

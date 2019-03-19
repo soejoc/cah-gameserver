@@ -1,8 +1,11 @@
 package io.jochimsen.cahgameserver.repository;
 
+import io.jochimsen.cahgameserver.config.ServerProperties;
 import io.jochimsen.cahgameserver.model.Game;
 import io.jochimsen.cahgameserver.model.Player;
 import io.jochimsen.cahprotocol.message.response.WaitForGameResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
@@ -11,8 +14,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Repository
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GameRepository {
-    private static final int PLAYER_SIZE_FOR_GAME = 2;
+    private final ServerProperties serverProperties;
 
     private final List<Game> games = new LinkedList<>();
     private final Queue<Player> playerQueue = new ConcurrentLinkedQueue<>();
@@ -20,7 +24,7 @@ public class GameRepository {
     public void register(final Player player) {
         playerQueue.add(player);
 
-        if(playerQueue.size() == PLAYER_SIZE_FOR_GAME) {
+        if(playerQueue.size() == serverProperties.getDefaultPlayerPerGame()) {
             final Game game = new Game();
 
             while (!playerQueue.isEmpty()) {
